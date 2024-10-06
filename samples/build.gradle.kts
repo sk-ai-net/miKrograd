@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.ksp)
 }
 
 
@@ -30,9 +31,22 @@ kotlin {
             implementation(kotlin("test-annotations-common"))
         }
 
+        val jvmMain by getting {
+            kotlin.srcDir("build/generated/ksp/jvm/jvmMain/kotlin")
+            dependencies {
+                implementation(project(":label-annotations"))
+            }
+        }
+
+
 
         jvmTest.dependencies {
             implementation(kotlin("test-junit"))
         }
     }
+}
+
+dependencies {
+    //    add("kspCommonMainMetadata", project(":test-processor"))
+    add("kspJvm", project(":label-processor"))
 }

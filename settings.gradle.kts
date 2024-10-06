@@ -18,7 +18,8 @@ dependencyResolutionManagement {
     }
 }
 
+include(":label-annotations")
+include(":label-processor")
 include(":core")
-include(":gguf")
 include(":dot-poet")
 include(":samples")
