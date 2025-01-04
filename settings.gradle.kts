@@ -18,8 +18,7 @@ dependencyResolutionManagement {
     }
 }
 
-include(":label-annotations")
-include(":label-processor")
-include(":core")
-include(":dot-poet")
+include(":miKrograd-annotations")
+include(":miKrograd-processor")
+include(":miKrograd")
 include(":samples")

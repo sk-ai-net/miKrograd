@@ -1,9 +1,8 @@
 package org.mikrograd.samples
-
+/*
 import org.mikrograd.diff.MLP
 import kotlin.random.Random
 import org.mikrograd.diff.Value
-import org.mikrograd.diff.times
 
 
 class MLPClustering(private val data: Pair<Array<DoubleArray>, IntArray>, val model: MLP ) {
@@ -42,3 +41,5 @@ class MLPClustering(private val data: Pair<Array<DoubleArray>, IntArray>, val mo
 
 
 }
+
+ */

@@ -1,5 +1,6 @@
 package org.mikrograd.samples
 
+/*
 import org.mikrograd.diff.Neuron
 import org.mikrograd.diff.Value
 import org.mikrograd.utils.drawDot
@@ -11,3 +12,5 @@ fun main() {
     val y = neuralNetwork(x)
     drawDot(y).toFile("neuron.png")
 }
+
+ */

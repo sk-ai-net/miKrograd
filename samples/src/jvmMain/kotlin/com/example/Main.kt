@@ -1,19 +1,19 @@
 package com.example
 
-class Value(
-    var data: Double,
-    var label: String = ""
-)
+import org.mikrograd.diff.DiffValue
+import org.mikrograd.diff.grad
+import org.mikrograd.diff.ksp.Mikrograd
 
-@Label
-val w1 = Value(0.15)
+@Mikrograd
+fun calcMain() {
+    val result: DiffValue<Double> = grad {
+        3.0 * 4.0
+    }
+    print(result.derivative)
+}
 
-@Label
-val w2 = Value(0.3)
 
 fun main() {
-    setAllLabels()
-    println(w1.label) // Should print "w1"
-    println(w2.label) // Should print "w2"
+    calcMain()
 }
 

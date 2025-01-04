@@ -1,9 +1,0 @@
-= Dot file converter
-
-== Build
-    docker build -t mh/dot .
-
-== Run
-  docker run --rm -v $(pwd):/workspace mh/dot -r ../  -p "*.dot" svg
-
-

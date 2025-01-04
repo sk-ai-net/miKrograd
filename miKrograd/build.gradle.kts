@@ -1,10 +1,11 @@
+@file:Suppress("OPT_IN_USAGE")
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.ksp)
 }
 
 
-group = "org.mikrograd.samples"
+group = "org.mikrograd"
 
 kotlin {
 
@@ -21,7 +22,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":miKrograd"))
+            implementation(kotlin("stdlib-common"))
         }
 
         commonTest.dependencies {
@@ -29,22 +30,9 @@ kotlin {
             implementation(kotlin("test-annotations-common"))
         }
 
-        val jvmMain by getting {
-            kotlin.srcDir("build/generated/ksp/jvm/jvmMain/kotlin")
-            dependencies {
-                implementation(project(":miKrograd-annotations"))
-            }
-        }
-
-
 
         jvmTest.dependencies {
             implementation(kotlin("test-junit"))
         }
     }
-}
-
-dependencies {
-    //    add("kspCommonMainMetadata", project(":test-processor"))
-    add("kspJvm", project(":miKrograd-processor"))
 }
