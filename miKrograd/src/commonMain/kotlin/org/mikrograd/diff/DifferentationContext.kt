@@ -1,27 +1,34 @@
 package org.mikrograd.diff
 
+import org.mikrograd.core.ComputeNode
+import org.mikrograd.core.ValueNode
+import org.mikrograd.diff.ksp.Mikrograd
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-/**
- * Automatic Differentiation context class.
- */
-abstract class DifferentiationContext<T> {
-    abstract operator fun DerivativeValueHolder<T>.plus(that: ValueHolder<T>): DerivativeValueHolder<T>
-    abstract fun backprop()
+@Mikrograd
+public fun <R> graph(block: () -> R): ComputeNode<R> {
+    // The KSP processor will generate a function with the name of the caller function plus "_Generated"
+    // We'll use reflection to find and call that function if it exists
+
+    // Fall back to the default implementation
+    return buildValueNode(block)
 }
 
-class DifferentiationContextImplDouble : DifferentiationContext<Double>() {
-    override fun DerivativeValueHolder<Double>.plus(that: ValueHolder<Double>): DerivativeValueHolder<Double> =
-        DoubleValueDerivative(this.value + that.value, 0.0, "+")
-
-    override fun backprop() {
-        //
-    }
+fun <R> buildValueNode(block: () -> R): ValueNode<R> {
+    // This is a fallback implementation that will be used if the KSP processor hasn't generated a function
+    val result = block()
+    return ValueNode(result)
 }
 
-public inline fun <R> grad(block: () -> R):  DiffValue<R> {
-    return  block()
+
+
+public fun <R> grad(block: () -> R): DiffValue<R> {
+    return buildDiffValue(block)
+}
+
+fun <R> buildDiffValue(block: () -> R): DiffValue<R> {
+    TODO("Not yet implemented")
 }
 
 
@@ -36,5 +43,3 @@ fun grad(body: DifferentiationContext<Double>.() -> DerivativeValueHolder<Double
 
 
  */
-
-

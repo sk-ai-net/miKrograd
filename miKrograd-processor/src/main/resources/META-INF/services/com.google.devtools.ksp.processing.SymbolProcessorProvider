@@ -1,2 +1,2 @@
-org.mikrograd.diff.ksp.DoubleProcessorProvider
+org.mikrograd.diff.ksp.ComputeGraphProcessorProvider
 

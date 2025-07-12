@@ -22,7 +22,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(kotlin("stdlib-common"))
+            implementation(project(":miKrograd-annotations"))
+
         }
 
         commonTest.dependencies {

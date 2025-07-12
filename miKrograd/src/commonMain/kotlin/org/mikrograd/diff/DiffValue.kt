@@ -4,5 +4,4 @@ package org.mikrograd.diff
 interface DiffValue<T> {
     val value: T
     val derivative: T
-    val children: List<DiffValue<T>>
 }

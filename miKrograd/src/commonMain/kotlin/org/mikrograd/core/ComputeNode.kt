@@ -11,6 +11,51 @@ package org.mikrograd.core
  */
 abstract class ComputeNode<T> {
     /**
+     * Returns a string representation of this node, including its ID and class name.
+     *
+     * @return A string representation of this node.
+     */
+    override fun toString(): String = "${this::class.simpleName}(id=$id)"
+    /**
+     * Unique identifier for this computation node.
+     *
+     * Each node in the computation graph has a unique ID that can be used for
+     * debugging, visualization, and tracking nodes in complex graphs.
+     */
+    var id: String = generateId()
+        private set
+
+    /**
+     * Sets a custom ID for this node.
+     *
+     * This method can be used to assign a meaningful name to a node for debugging
+     * or visualization purposes.
+     *
+     * @param customId The custom ID to assign to this node.
+     * @return This node, to allow for method chaining.
+     */
+    fun withId(customId: String): ComputeNode<T> {
+        id = customId
+        return this
+    }
+
+    companion object {
+        /**
+         * Counter used to generate unique IDs for nodes.
+         */
+        private var idCounter = 0
+
+        /**
+         * Generates a unique ID for a node.
+         *
+         * @return A unique ID string.
+         */
+        private fun generateId(): String {
+            return "node_${idCounter++}"
+        }
+    }
+
+    /**
      * The list of input nodes for this computation node.
      *
      * The inputs represent the dependencies of this node. When this node is evaluated,
@@ -97,9 +142,10 @@ class DifferentiableFunctionNode<T>(
     override fun evaluate() = differentiableFunction(inputs[0].evaluate())
 
     /**
-     * Returns the name of the differentiableFunction function.
+     * Returns a string representation of this node, including its ID and the name
+     * of the differentiable function.
      *
-     * @return The name of the differentiableFunction function.
+     * @return A string representation of this node.
      */
-    override fun toString() = name
+    override fun toString() = "$name(id=$id)"
 }

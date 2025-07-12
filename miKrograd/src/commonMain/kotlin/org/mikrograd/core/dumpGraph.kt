@@ -2,14 +2,14 @@ package org.mikrograd.core
 
 fun <T> printComputeGraph(node: ComputeNode<T>, indent: String = ""): String =
     when (node) {
-        is ValueNode -> "${indent}Value(${node.evaluate()})\n"
+        is ValueNode -> "${indent}Value(${node.evaluate()}) [id=${node.id}]\n"
         is AddNode -> buildString {
-            append("${indent}Add\n")
+            append("${indent}Add [id=${node.id}]\n")
             node.inputs.forEach { append(printComputeGraph(it, "$indent  ")) }
         }
 
         is MultiplyNode -> buildString {
-            append("${indent}Multiply\n")
+            append("${indent}Multiply [id=${node.id}]\n")
             node.inputs.forEach { append(printComputeGraph(it, "$indent  ")) }
         }
 
@@ -18,5 +18,5 @@ fun <T> printComputeGraph(node: ComputeNode<T>, indent: String = ""): String =
             node.inputs.forEach { append(printComputeGraph(it, "$indent  ")) }
         }
 
-        else -> "${indent}Unknown\n"
+        else -> "${indent}Unknown [id=${node.id}]\n"
     }
