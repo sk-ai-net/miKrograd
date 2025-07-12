@@ -48,3 +48,7 @@ dependencies {
     //    add("kspCommonMainMetadata", project(":test-processor"))
     add("kspJvm", project(":miKrograd-processor"))
 }
+
+ksp {
+    arg("ksp.verbose", "true")
+}

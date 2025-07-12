@@ -8,12 +8,12 @@ import org.mikrograd.diff.ksp.Mikrograd
  */
 @Mikrograd
 fun expr() {
-    3.0 * 4.0 + (7.0 + 3.0)
+    2.0 * 1.0 + (2.0 + 3.0)
 }
 
 fun main() {
     val ex = exprGenerated()
     println(printComputeGraph(ex))
     println(ex.evaluate())
-    assert(ex.evaluate() == 12.0)
+    assert(ex.evaluate() == 7.0)
 }
