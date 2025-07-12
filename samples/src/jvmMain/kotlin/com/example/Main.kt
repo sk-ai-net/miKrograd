@@ -1,15 +1,25 @@
 package com.example
 
-import org.mikrograd.diff.DiffValue
-import org.mikrograd.diff.grad
+import org.mikrograd.core.printComputeGraph
+import org.mikrograd.diff.graph
 import org.mikrograd.diff.ksp.Mikrograd
 
 @Mikrograd
 fun calcMain() {
-    val result: DiffValue<Double> = grad {
+
+    val compute = graph {
         3.0 * 4.0
     }
-    print(result.derivative)
+    println(printComputeGraph(compute))
+    assert(compute.evaluate() == 7.0)
+
+    /*
+        val result = autodiff {
+            3.0 * 4.0
+        }
+        print(result.derivative)
+
+     */
 }
 
 
