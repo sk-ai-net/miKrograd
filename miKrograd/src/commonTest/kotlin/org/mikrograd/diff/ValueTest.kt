@@ -7,7 +7,7 @@ class ValueTest {
     @Test
     fun testSanityCheck() {
         // micrograd equivalent
-        val xmg = Value(-4.0)
+        val xmg = ValueFactory.create(-4.0)
         val zmg = 2.0 * xmg + 2 + xmg
         val qmg = zmg.relu() + zmg * xmg
         val hmg = (zmg * zmg).relu()
@@ -35,18 +35,18 @@ class ValueTest {
     @Test
     fun testMoreOps() {
         // micrograd equivalent
-        val amg = Value(-4.0)
-        val bmg = Value(2.0)
+        val amg = ValueFactory.create(-4.0)
+        val bmg = ValueFactory.create(2.0)
         var cmg = amg + bmg
         var dmg = amg * bmg + bmg.pow(3.0)
-        cmg += cmg + 1
-        cmg += 1 + cmg + (-amg)
-        dmg += dmg * 2 + (bmg + amg).relu()
-        dmg += 3.0 * dmg + (bmg - amg).relu()
+        cmg = cmg + (cmg + 1)
+        cmg = cmg + (1 + cmg + (-amg))
+        dmg = dmg + (dmg * 2 + (bmg + amg).relu())
+        dmg = dmg + (3.0 * dmg + (bmg - amg).relu())
         val emg = cmg - dmg
         val fmg = emg.pow(2.0)
         var gmg = fmg / 2
-        gmg += 10.0 / fmg
+        gmg = gmg + (10.0 / fmg)
         gmg.backward()
 
         // Ktorch equivalent (imaginary API)

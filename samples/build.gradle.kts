@@ -52,3 +52,11 @@ dependencies {
 ksp {
     arg("ksp.verbose", "true")
 }
+
+// Add a run task for the JVM application
+tasks.register<JavaExec>("runJvm") {
+    group = "application"
+    description = "Run the JVM application"
+    classpath = files(kotlin.jvm().compilations["main"].output.allOutputs, configurations.getByName("jvmRuntimeClasspath"))
+    mainClass.set("com.example.MainKt")
+}

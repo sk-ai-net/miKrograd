@@ -1,130 +1,99 @@
 package org.mikrograd.diff
 
-import kotlin.math.exp
-import kotlin.math.pow
+/**
+ * ValueInterface that defines all operations for automatic differentiation.
+ * This allows for more flexibility in implementation and clearer API contract.
+ */
+interface ValueInterface {
+    /** The data value */
+    var data: Double
 
-class Value(
-    var data: Double,
-    val _children: List<Value> = listOf(),
-    private val _op: String = "",
-    var label: String = ""
-) {
-    var grad: Double = 0.0
-    private var _backward: () -> Unit = {}
+    /** The label for this value */
+    var label: String
 
-    val children: List<Value>
-        get() = _children
-
+    /** The operation that produced this value */
     val op: String
-        get() = _op
 
-    init {
-        _backward = { }
-    }
+    /** The child nodes in the computational graph */
+    val children: List<ValueInterface>
 
-    operator fun plus(other: Value): Value {
-        val out = Value(data + other.data, listOf(this, other), "+", label = "")
-        out._backward = {
-            this.grad += out.grad
-            other.grad += out.grad
-        }
-        return out
-    }
+    /** Addition operation */
+    operator fun plus(other: ValueInterface): ValueInterface
+    operator fun plus(other: Int): ValueInterface
+    operator fun plus(other: Double): ValueInterface
 
-    operator fun times(other: Value): Value {
-        val out = Value(data * other.data, listOf(this, other), "*", label = "")
-        out._backward = {
-            this.grad += other.data * out.grad
-            other.grad += this.data * out.grad
-        }
-        return out
-    }
+    /** Multiplication operation */
+    operator fun times(other: ValueInterface): ValueInterface
+    operator fun times(other: Int): ValueInterface
+    operator fun times(other: Double): ValueInterface
 
-    infix fun pow(other: Double): Value {
-        val out = Value(data.pow(other), listOf(this), "^$other")
-        out._backward = {
-            this.grad += (other * data.pow(other - 1)) * out.grad
-        }
-        return out
-    }
+    /** Subtraction operation */
+    operator fun minus(other: ValueInterface): ValueInterface
+    operator fun unaryMinus(): ValueInterface
 
-    fun relu(): Value {
-        val out = Value(if (data < 0) 0.0 else data, listOf(this), "ReLU", label = "Relu(${this.label})")
-        out._backward = {
-            if (data > 0) {
-                this.grad += out.grad
-            } else {
-                this.grad = 0.0
-            }
-        }
-        return out
-    }
+    /** Division operation */
+    operator fun div(other: ValueInterface): ValueInterface
+    operator fun div(other: Int): ValueInterface
+    operator fun div(other: Double): ValueInterface
 
-    fun tanh(): Value {
-        val t = (exp(2 * data) - 1) / (exp(2 * data) + 1)
-        val out = Value(t, listOf(this), "tanh", label = "tanh(${this.label})")
-        out._backward = {
-            this.grad += (1 - t * t) * out.grad
-        }
-        return out
-    }
+    /** Power operation */
+    infix fun pow(other: Double): ValueInterface
 
-    fun sigmoid(): Value {
-        val out = Value(1.0 / (1.0 + exp(-data)), listOf(this), "sigmoid", label = "sigmoid(${this.label})")
-        out._backward = {
-            val s = 1.0 / (1.0 + exp(-data))
-            this.grad = s * (1.0 - s)
-        }
-        return out
-    }
-
-
-    fun backward() {
-        val topo = mutableListOf<Value>()
-        val visited = mutableSetOf<Value>()
-
-        fun buildTopo(v: Value) {
-            if (!visited.contains(v)) {
-                visited.add(v)
-                v._children.forEach { buildTopo(it) }
-                topo.add(v)
-            }
-        }
-
-        buildTopo(this)
-
-        grad = 1.0
-        val reversed = topo.asReversed()
-        reversed.forEach { it._backward() }
-    }
-
-    operator fun unaryMinus() = this.times(Value(-1.0, _op = ""))
-
-    operator fun minus(other: Value) = this + (-other)
-    operator fun plus(other: Int) = this + Value(other.toDouble(), _op = "+")
-
-    operator fun div(other: Int) = this * Value(other.toDouble()).pow(-1.0)
-    operator fun div(other: Double) = this * Value(other).pow(-1.0)
-    operator fun div(other: Value) = this * other.pow(-1.0)
-
-    operator fun times(other: Int) = this.times(Value(other.toDouble(), _op = "*"))
-
-    operator fun times(other: Double) = this.times(Value(other, _op = "*"))
-
-
-    override fun toString(): String = "Value(data=$data, grad=$grad, op=$_op, label='$label')"
+    /** Activation functions */
+    fun relu(): ValueInterface
+    fun tanh(): ValueInterface
+    fun sigmoid(): ValueInterface
 }
 
-// Extension functions for Double to seamlessly interact with Value instances
-operator fun Int.plus(value: Value): Value = Value(this.toDouble(), _op = "") + value
-operator fun Double.plus(value: Value): Value = Value(this, _op = "") + value
+/**
+ * Factory object for creating Value instances.
+ * This allows choosing between ForwardValue (no gradients) and BackwardValue (with gradients)
+ * based on whether backward pass is needed.
+ */
+object ValueFactory {
+    /**
+     * Create a Value instance.
+     * @param data The data value
+     * @param children The child nodes in the computational graph
+     * @param op The operation that produced this value
+     * @param label A label for this value
+     * @param requiresGrad Whether this value requires gradient computation
+     * @return Either a ForwardValue or BackwardValue based on requiresGrad
+     */
+    fun create(
+        data: Double,
+        children: List<ValueInterface> = listOf(),
+        op: String = "",
+        label: String = "",
+        requiresGrad: Boolean = true
+    ): ValueInterface {
+        return if (requiresGrad) {
+            // Convert any ForwardValue children to BackwardValue
+            val backwardChildren = children.map { 
+                if (it is BackwardValue) it else BackwardValue(it as ForwardValue) 
+            }
+            BackwardValue(data, backwardChildren, op, label)
+        } else {
+            ForwardValue(data, children.map { it as ForwardValue }, op, label)
+        }
+    }
+}
 
-operator fun Int.times(value: Value): Value = Value(this.toDouble(), _op = "") * value
-operator fun Double.times(value: Value): Value = Value(this, _op = "") * value
+/**
+ * Value is now a typealias to ValueInterface for better abstraction.
+ * This allows for more flexibility in implementation.
+ */
+typealias Value = ValueInterface
 
-operator fun Int.minus(value: Value): Value = Value(this.toDouble(), _op = "") - value
-operator fun Double.minus(value: Value): Value = Value(this, _op = "") - value
+// Extension functions for Double and Int to seamlessly interact with ValueInterface instances
+operator fun Int.plus(value: ValueInterface): ValueInterface = ValueFactory.create(this.toDouble()) + value
+operator fun Double.plus(value: ValueInterface): ValueInterface = ValueFactory.create(this) + value
 
+operator fun Int.times(value: ValueInterface): ValueInterface = ValueFactory.create(this.toDouble()) * value
+operator fun Double.times(value: ValueInterface): ValueInterface = ValueFactory.create(this) * value
 
-operator fun Int.div(value: Value): Value = Value(this.toDouble(), _op = "") / value
-operator fun Double.div(value: Value): Value = Value(this, _op = "") / value
+operator fun Int.minus(value: ValueInterface): ValueInterface = ValueFactory.create(this.toDouble()) - value
+operator fun Double.minus(value: ValueInterface): ValueInterface = ValueFactory.create(this) - value
+
+operator fun Int.div(value: ValueInterface): ValueInterface = ValueFactory.create(this.toDouble()) / value
+operator fun Double.div(value: ValueInterface): ValueInterface = ValueFactory.create(this) / value
