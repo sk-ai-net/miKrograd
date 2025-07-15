@@ -43,41 +43,13 @@ interface ValueInterface {
     fun relu(): ValueInterface
     fun tanh(): ValueInterface
     fun sigmoid(): ValueInterface
-}
 
-/**
- * Factory object for creating Value instances.
- * This allows choosing between ForwardValue (no gradients) and BackwardValue (with gradients)
- * based on whether backward pass is needed.
- */
-object ValueFactory {
-    /**
-     * Create a Value instance.
-     * @param data The data value
-     * @param children The child nodes in the computational graph
-     * @param op The operation that produced this value
-     * @param label A label for this value
-     * @param requiresGrad Whether this value requires gradient computation
-     * @return Either a ForwardValue or BackwardValue based on requiresGrad
-     */
-    fun create(
-        data: Double,
-        children: List<ValueInterface> = listOf(),
-        op: String = "",
-        label: String = "",
-        requiresGrad: Boolean = true
-    ): ValueInterface {
-        return if (requiresGrad) {
-            // Convert any ForwardValue children to BackwardValue
-            val backwardChildren = children.map { 
-                if (it is BackwardValue) it else BackwardValue(it as ForwardValue) 
-            }
-            BackwardValue(data, backwardChildren, op, label)
-        } else {
-            ForwardValue(data, children.map { it as ForwardValue }, op, label)
-        }
+    /** Backward pass for gradient computation */
+    fun backward() {
+        // Default empty implementation
     }
 }
+
 
 /**
  * Value is now a typealias to ValueInterface for better abstraction.
@@ -85,6 +57,7 @@ object ValueFactory {
  */
 typealias Value = ValueInterface
 
+/*
 // Extension functions for Double and Int to seamlessly interact with ValueInterface instances
 operator fun Int.plus(value: ValueInterface): ValueInterface = ValueFactory.create(this.toDouble()) + value
 operator fun Double.plus(value: ValueInterface): ValueInterface = ValueFactory.create(this) + value
@@ -97,3 +70,4 @@ operator fun Double.minus(value: ValueInterface): ValueInterface = ValueFactory.
 
 operator fun Int.div(value: ValueInterface): ValueInterface = ValueFactory.create(this.toDouble()) / value
 operator fun Double.div(value: ValueInterface): ValueInterface = ValueFactory.create(this) / value
+*/

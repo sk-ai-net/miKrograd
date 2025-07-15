@@ -60,3 +60,11 @@ tasks.register<JavaExec>("runJvm") {
     classpath = files(kotlin.jvm().compilations["main"].output.allOutputs, configurations.getByName("jvmRuntimeClasspath"))
     mainClass.set("com.example.MainKt")
 }
+
+// Add a run task for the KspMain application
+tasks.register<JavaExec>("runKspMain") {
+    group = "application"
+    description = "Run the KspMain application"
+    classpath = files(kotlin.jvm().compilations["main"].output.allOutputs, configurations.getByName("jvmRuntimeClasspath"))
+    mainClass.set("com.example.KspMainKt")
+}

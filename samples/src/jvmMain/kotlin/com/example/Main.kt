@@ -1,7 +1,7 @@
 package com.example
 
+import org.mikrograd.diff.ForwardValue
 import org.mikrograd.diff.Value
-import org.mikrograd.diff.ValueFactory
 import kotlin.math.pow
 
 /**
@@ -34,18 +34,19 @@ fun expression(): Value {
 
     // Create multiple instances of the expression
     val result = (1..1000).map {
-        val a = ValueFactory.create(-4.0)
-        val b = ValueFactory.create(2.0)
+
+        val a = ForwardValue(-4.0)
+        val b = ForwardValue(2.0)
         var c = a + b
         var d = a * b + b.pow(3.0)
-        c = c + (c + ValueFactory.create(1.0))
-        c = c + (ValueFactory.create(1.0) + c + (-a))
-        d = d + (d * ValueFactory.create(2.0) + (b + a).relu())
-        d = d + (d * ValueFactory.create(3.0) + (b - a).relu())
+        c = c + (c + ForwardValue(1.0))
+        c = (c + (ForwardValue(1.0) + c + (-a))) as ForwardValue
+        d = d + (d * ForwardValue(2.0) + (b + a).relu())
+        d = d + (d * ForwardValue(3.0) + (b - a).relu())
         val e = c - d
         val f = e.pow(2.0)
         var g = f / 2
-        g = g + (ValueFactory.create(10.0) / f)
+        g = g + (ForwardValue(10.0) / f)
 
         // Add all values to references to prevent garbage collection
         references.add(a)

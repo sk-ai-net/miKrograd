@@ -10,10 +10,10 @@ class ExpressionParser {
     /**
      * Parse an expression and generate code for the compute graph.
      * @param expression The expression to parse
+     * @param visitor The visitor to use for code generation (defaults to CodeGeneratingVisitor)
      * @return The code block representing the compute graph
      */
-    fun parseExpression(expression: String): CodeBlock {
-        val visitor = CodeGeneratingVisitor()
+    fun parseExpression(expression: String, visitor: ComputeNodeVisitor<Double> = CodeGeneratingVisitor()): CodeBlock {
         val tokens = tokenize(expression)
         val ast = buildAST(tokens)
         return generateCode(ast, visitor)
@@ -130,7 +130,7 @@ class ExpressionParser {
      * @param visitor The visitor to use
      * @return The generated code
      */
-    private fun generateCode(ast: ASTNode, visitor: CodeGeneratingVisitor): CodeBlock {
+    private fun generateCode(ast: ASTNode, visitor: ComputeNodeVisitor<Double>): CodeBlock {
         return when (ast) {
             is ASTNode.Value -> visitor.visitValueNode(ast.value, "const_${ast.value}")
             is ASTNode.Add -> visitor.visitAddNode(
