@@ -23,6 +23,7 @@ fun forceGC() {
     Thread.sleep(100)
 }
 
+
 /**
  * Implements the expression as specified
  * Creates multiple instances to make memory usage more significant
