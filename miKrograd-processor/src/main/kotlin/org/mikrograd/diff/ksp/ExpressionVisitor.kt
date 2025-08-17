@@ -21,9 +21,9 @@ class DifferentiationVisitor(private val mode: ComputationMode) : ComputeNodeVis
 
     private fun getConstructorByMode(): String =
         if (mode == ComputationMode.INFERENCE) {
-            "ForwardValue"
+            "ForwardPassNode"
         } else {
-            "BackwardValue"
+            "BackpropNode"
         }
 
 

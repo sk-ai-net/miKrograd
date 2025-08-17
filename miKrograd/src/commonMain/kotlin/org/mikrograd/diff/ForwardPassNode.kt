@@ -120,7 +120,7 @@ open class ForwardPassNode(
     override operator fun times(other: Int): AutoDiffNode = this.times(ForwardPassNode(other.toDouble(), _op = "*"))
     override operator fun times(other: Double): AutoDiffNode = this.times(ForwardPassNode(other, _op = "*"))
 
-    override fun toString(): String = "ForwardValue(data=$data, op=$_op, label='$label')"
+    override fun toString(): String = "ForwardNode(data=$data, op=$_op, label='$label')"
 
     /**
      * Convert this ForwardValue to a BackwardValue when gradient information is needed.

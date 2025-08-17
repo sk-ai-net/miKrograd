@@ -160,7 +160,7 @@ class BackpropNode(
         reversed.forEach { it._backward() }
     }
 
-    override fun toString(): String = "BackwardValue(data=$data, grad=$grad, op=$op, label='$label')"
+    override fun toString(): String = "Backprop(data=$data, grad=$grad, op=$op, label='$label')"
 }
 
 // Extension functions for Double and Int to seamlessly interact with BackwardValue instances

@@ -1,8 +1,7 @@
 package com.example
 
-import org.mikrograd.diff.ForwardValue
-import org.mikrograd.diff.Value
-import kotlin.math.pow
+import org.mikrograd.diff.ForwardPassNode
+import org.mikrograd.diff.AutoDiffNode
 
 /**
  * Helper function to get the used memory in the JVM
@@ -28,25 +27,25 @@ fun forceGC() {
  * Implements the expression as specified
  * Creates multiple instances to make memory usage more significant
  */
-fun expression(): Value {
+fun expression(): AutoDiffNode {
     // Create a list to hold references to prevent garbage collection
-    val references = mutableListOf<Value>()
+    val references = mutableListOf<AutoDiffNode>()
 
     // Create multiple instances of the expression
     val result = (1..1000).map {
 
-        val a = ForwardValue(-4.0)
-        val b = ForwardValue(2.0)
+        val a = ForwardPassNode(-4.0)
+        val b = ForwardPassNode(2.0)
         var c = a + b
         var d = a * b + b.pow(3.0)
-        c = c + (c + ForwardValue(1.0))
-        c = (c + (ForwardValue(1.0) + c + (-a))) as ForwardValue
-        d = d + (d * ForwardValue(2.0) + (b + a).relu())
-        d = d + (d * ForwardValue(3.0) + (b - a).relu())
+        c = c + (c + ForwardPassNode(1.0))
+        c = (c + (ForwardPassNode(1.0) + c + (-a))) as ForwardPassNode
+        d = d + (d * ForwardPassNode(2.0) + (b + a).relu())
+        d = d + (d * ForwardPassNode(3.0) + (b - a).relu())
         val e = c - d
         val f = e.pow(2.0)
         var g = f / 2
-        g = g + (ForwardValue(10.0) / f)
+        g = g + (ForwardPassNode(10.0) / f)
 
         // Add all values to references to prevent garbage collection
         references.add(a)
@@ -94,7 +93,7 @@ fun main() {
 
     // Run multiple times to stabilize JVM memory
     repeat(5) {
-        println("Warmup run ${it+1}/5")
+        println("Warmup run ${it + 1}/5")
         calc()
         calcBack()
     }
