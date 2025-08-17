@@ -1,8 +1,8 @@
 package org.mikrograd.samples
 
+/*
 import org.mikrograd.diff.MLP
 import org.mikrograd.diff.Value
-import org.mikrograd.diff.minus
 import org.mikrograd.utils.drawDot
 
 fun loss(X: Array<DoubleArray>, y: DoubleArray, model: MLP): Pair<Value, Double> {
@@ -52,4 +52,7 @@ fun main() {
     backGr.toFile("back.dot")
 
 
+
 }
+
+ */
