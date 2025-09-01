@@ -2,10 +2,8 @@
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    id("com.vanniktech.maven.publish") version "0.34.0"
 }
-
-
-group = "org.mikrograd"
 
 kotlin {
 
