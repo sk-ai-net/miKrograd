@@ -1,5 +1,8 @@
 # miKrograd
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/sk.ainet.mikrograd/miKrograd.svg)](https://central.sonatype.com/artifact/sk.ainet.mikrograd/miKrograd)
+
 A Kotlin multiplatform automatic differentiation library inspired by [micrograd](https://github.com/karpathy/micrograd) by Andrej Karpathy, featuring compile-time optimization through KSP (Kotlin Symbol Processing).
 
 ### Core Features
